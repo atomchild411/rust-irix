@@ -1,0 +1,133 @@
+From 860d892f39d7a848f2b485ea3b35f56b74b3db92 Mon Sep 17 00:00:00 2001
+From: atomchild411 <143453386+atomchild411@users.noreply.github.com>
+Date: Sun, 4 Oct 2026 03:16:48 +0000
+Subject: [PATCH 1/2] Add the mips64-sgi-irix target (IRIX 6.5, MIPS IV, N32)
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
+---
+ compiler/rustc_target/src/spec/base/irix.rs   | 20 +++++++++++++
+ compiler/rustc_target/src/spec/base/mod.rs    |  1 +
+ compiler/rustc_target/src/spec/mod.rs         |  3 ++
+ .../src/spec/targets/mips64_sgi_irix.rs       | 30 +++++++++++++++++++
+ src/bootstrap/src/core/sanity.rs              |  1 +
+ 5 files changed, 55 insertions(+)
+ create mode 100644 compiler/rustc_target/src/spec/base/irix.rs
+ create mode 100644 compiler/rustc_target/src/spec/targets/mips64_sgi_irix.rs
+
+diff --git a/compiler/rustc_target/src/spec/base/irix.rs b/compiler/rustc_target/src/spec/base/irix.rs
+new file mode 100644
+index 000000000..1fe7ab81b
+--- /dev/null
++++ b/compiler/rustc_target/src/spec/base/irix.rs
+@@ -0,0 +1,20 @@
++use crate::spec::{Cc, LinkerFlavor, Lld, Os, TargetOptions, cvs};
++
++pub(crate) fn opts() -> TargetOptions {
++    TargetOptions {
++        os: Os::Irix,
++        vendor: "sgi".into(),
++        dynamic_linking: true,
++        families: cvs!["unix"],
++        has_rpath: true,
++        // Linked by clang (the IRIX toolchain is clang with lld), so GNU-style linker arguments.
++        linker_flavor: LinkerFlavor::Gnu(Cc::Yes, Lld::No),
++        // IRIX executables are not position independent.
++        position_independent_executables: false,
++        // Unwind tables everywhere, so backtraces work with panic=abort too.
++        default_uwtable: true,
++        // No thread-local storage in IRIX: std keeps its thread locals in pthread keys.
++        has_thread_local: false,
++        ..Default::default()
++    }
++}
+diff --git a/compiler/rustc_target/src/spec/base/mod.rs b/compiler/rustc_target/src/spec/base/mod.rs
+index 1fc2deed7..0ea05759e 100644
+--- a/compiler/rustc_target/src/spec/base/mod.rs
++++ b/compiler/rustc_target/src/spec/base/mod.rs
+@@ -15,6 +15,7 @@
+ pub(crate) mod hurd_gnu;
+ pub(crate) mod hyperlight;
+ pub(crate) mod illumos;
++pub(crate) mod irix;
+ pub(crate) mod l4re;
+ pub(crate) mod linux;
+ pub(crate) mod linux_gnu;
+diff --git a/compiler/rustc_target/src/spec/mod.rs b/compiler/rustc_target/src/spec/mod.rs
+index b5196599e..fa22673ae 100644
+--- a/compiler/rustc_target/src/spec/mod.rs
++++ b/compiler/rustc_target/src/spec/mod.rs
+@@ -1328,6 +1328,7 @@ fn $module() {
+     ("powerpc-unknown-linux-gnuspe", powerpc_unknown_linux_gnuspe),
+     ("powerpc-unknown-linux-musl", powerpc_unknown_linux_musl),
+     ("powerpc-unknown-linux-muslspe", powerpc_unknown_linux_muslspe),
++    ("mips64-sgi-irix", mips64_sgi_irix),
+     ("powerpc64-ibm-aix", powerpc64_ibm_aix),
+     ("powerpc64-unknown-linux-gnu", powerpc64_unknown_linux_gnu),
+     ("powerpc64-unknown-linux-gnuelfv2", powerpc64_unknown_linux_gnuelfv2),
+@@ -1863,6 +1864,7 @@ pub enum Os {
+         Hyperlight = "hyperlight",
+         Illumos = "illumos",
+         IOs = "ios",
++        Irix = "irix",
+         L4Re = "l4re",
+         Linux = "linux",
+         LynxOs178 = "lynxos178",
+@@ -1944,6 +1946,7 @@ pub fn desc_symbol(&self) -> Symbol {
+     /// See the `cfg_abi` field of [`TargetOptions`] for more details.
+     pub enum CfgAbi {
+         Abi64 = "abi64",
++        AbiN32 = "abin32",
+         AbiV2 = "abiv2",
+         AbiV2Hf = "abiv2hf",
+         Eabi = "eabi",
+diff --git a/compiler/rustc_target/src/spec/targets/mips64_sgi_irix.rs b/compiler/rustc_target/src/spec/targets/mips64_sgi_irix.rs
+new file mode 100644
+index 000000000..e56a6b486
+--- /dev/null
++++ b/compiler/rustc_target/src/spec/targets/mips64_sgi_irix.rs
+@@ -0,0 +1,30 @@
++use rustc_abi::Endian;
++
++use crate::spec::{Arch, CfgAbi, LlvmAbi, Target, TargetMetadata, TargetOptions, base, cvs};
++
++pub(crate) fn target() -> Target {
++    Target {
++        // Rust's LLVM has no IRIX OS; the N32 Linux triple stands in (same object format and
++        // calling convention, and the IRIX toolchain links the result).
++        llvm_target: "mips64-unknown-linux-gnuabin32".into(),
++        metadata: TargetMetadata {
++            description: Some("MIPS IV IRIX 6.5, N32 ABI".into()),
++            tier: Some(3),
++            host_tools: Some(false),
++            std: Some(true),
++        },
++        pointer_width: 32,
++        data_layout: "E-m:e-p:32:32-i8:8:32-i16:16:32-i64:64-i128:128-n32:64-S128".into(),
++        arch: Arch::Mips64,
++        options: TargetOptions {
++            cfg_abi: CfgAbi::AbiN32,
++            endian: Endian::Big,
++            cpu: "mips4".into(),
++            features: "+mips4".into(),
++            max_atomic_width: Some(64),
++            llvm_abiname: LlvmAbi::N32,
++            llvm_args: cvs!["-mno-check-zero-division"],
++            ..base::irix::opts()
++        },
++    }
++}
+diff --git a/src/bootstrap/src/core/sanity.rs b/src/bootstrap/src/core/sanity.rs
+index 6983030fe..02f9f7929 100644
+--- a/src/bootstrap/src/core/sanity.rs
++++ b/src/bootstrap/src/core/sanity.rs
+@@ -36,6 +36,7 @@ pub struct Finder {
+ /// when the newly-bumped stage 0 compiler now knows about the formerly-missing targets.
+ const STAGE0_MISSING_TARGETS: &[&str] = &[
+     // just a dummy comment so the list doesn't get onelined
++    "mips64-sgi-irix",
+ ];
+ 
+ /// Minimum version threshold for libstdc++ required when using prebuilt LLVM
+-- 
+2.47.3
+
