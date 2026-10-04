@@ -2064,6 +2064,20 @@ pub fn lstat(p: &CStr) -> io::Result<FileAttr> {
     Ok(FileAttr::from_stat64(stat))
 }
 
+#[cfg(target_os = "irix")]
+pub fn canonicalize(path: &CStr) -> io::Result<PathBuf> {
+    // IRIX's realpath() predates POSIX 2008: it fails with EINVAL unless given a buffer.
+    let mut buf = vec![0u8; libc::PATH_MAX as usize + 1];
+    let r = unsafe { libc::realpath(path.as_ptr(), buf.as_mut_ptr().cast()) };
+    if r.is_null() {
+        return Err(io::Error::last_os_error());
+    }
+    let len = unsafe { CStr::from_ptr(r).to_bytes().len() };
+    buf.truncate(len);
+    Ok(PathBuf::from(OsString::from_vec(buf)))
+}
+
+#[cfg(not(target_os = "irix"))]
 pub fn canonicalize(path: &CStr) -> io::Result<PathBuf> {
     let r = unsafe { libc::realpath(path.as_ptr(), ptr::null_mut()) };
     if r.is_null() {
