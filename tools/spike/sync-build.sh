@@ -1,5 +1,5 @@
 #!/bin/sh
-# Push code/rust-libc, code/rust-library-irix and a test crate to the VM, build it for IRIX.
+# Push code/rust-libc, code/rust-irix and a test crate to the VM, build it for IRIX.
 # usage: sync-build.sh [crate]   (hello-std, or a directory under scratch/rust-irix)
 set -e
 C=${1:-hello-std}
@@ -10,7 +10,7 @@ W=/Volumes/portable/workspace-claude/IRIX
 V=root@pkgsrc-bulk-00
 S=/build/pkgbuild/rust-spike
 rsync -a --delete --exclude target --exclude .git $W/code/rust-libc/ $V:$S/libc/
-rsync -a --delete --exclude target --exclude .git $W/code/rust-library-irix/library/ $V:$S/$SRC/library/
+rsync -a --delete --exclude target --exclude .git $W/code/rust-irix/library/ $V:$S/$SRC/library/
 if [ -d $W/scratch/rust-irix/$C ]; then
   rsync -a --exclude target $W/scratch/rust-irix/$C/ $V:$S/$C/
   rsync -a $W/scratch/rust-irix/mips64-sgi-irix.json $V:$S/$C/
