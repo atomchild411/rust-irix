@@ -1,0 +1,30 @@
+# rustc 1.96.1 with the IRIX target, with pkgsrc's external LLVM.
+change-id = "ignore"
+
+[llvm]
+link-shared = true
+download-ci-llvm = false
+
+[build]
+host = ["x86_64-unknown-linux-gnu"]
+target = ["x86_64-unknown-linux-gnu", "mips64-sgi-irix"]
+docs = false
+extended = false
+vendor = true
+optimized-compiler-builtins = false
+jobs = 32
+
+[rust]
+channel = "stable"
+lld = false
+llvm-libunwind = "system"
+
+[target.x86_64-unknown-linux-gnu]
+llvm-config = "/build/pkgbuild/pkgsrc-irix/host/bin/llvm-config"
+
+[target.mips64-sgi-irix]
+cc = "/build/pkgbuild/pkgsrc-irix/tools/bin/mipseb-sgi-irix6.5-clang"
+cxx = "/build/pkgbuild/pkgsrc-irix/tools/bin/mipseb-sgi-irix6.5-clang++"
+ar = "/build/pkgbuild/llvm-irix/cross21/bin/llvm-ar"
+ranlib = "/build/pkgbuild/llvm-irix/cross21/bin/llvm-ranlib"
+linker = "/build/pkgbuild/pkgsrc-irix/tools/bin/mipseb-sgi-irix6.5-clang"
