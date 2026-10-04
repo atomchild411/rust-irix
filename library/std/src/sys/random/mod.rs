@@ -18,6 +18,7 @@ cfg_select! {
         target_os = "freebsd",
         target_os = "haiku",
         target_os = "illumos",
+        target_os = "irix",
         target_os = "netbsd",
         target_os = "openbsd",
         target_os = "rtems",

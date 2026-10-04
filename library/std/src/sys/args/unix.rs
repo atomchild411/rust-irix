@@ -80,6 +80,7 @@ pub fn args() -> Args {
     target_os = "vxworks",
     target_os = "horizon",
     target_os = "aix",
+    target_os = "irix",
     target_os = "nto",
     target_os = "qnx",
     target_os = "hurd",

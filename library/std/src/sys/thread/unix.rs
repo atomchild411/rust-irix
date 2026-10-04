@@ -5,6 +5,7 @@
     target_os = "redox",
     target_os = "hurd",
     target_os = "aix",
+    target_os = "irix",
     target_os = "wasi",
 )))]
 use crate::ffi::CStr;
@@ -162,6 +163,7 @@ pub fn available_parallelism() -> io::Result<NonZero<usize>> {
             target_os = "hurd",
             target_os = "linux",
             target_os = "aix",
+            target_os = "irix",
             target_vendor = "apple",
             target_os = "cygwin",
             target_os = "redox",

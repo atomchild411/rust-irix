@@ -421,6 +421,7 @@ struct dirent64_min {
         target_os = "haiku",
         target_os = "vxworks",
         target_os = "aix",
+        target_os = "irix",
         target_os = "nto",
         target_os = "qnx",
         target_os = "vita",
@@ -945,6 +946,7 @@ impl Iterator for ReadDir {
                         target_os = "haiku",
                         target_os = "vxworks",
                         target_os = "aix",
+                        target_os = "irix",
                         target_os = "nto",
                         target_os = "qnx",
                         target_os = "vita",
@@ -1058,6 +1060,7 @@ impl DirEntry {
             target_os = "haiku",
             target_os = "vxworks",
             target_os = "aix",
+            target_os = "irix",
             target_os = "nto",
             target_os = "qnx",
             target_os = "vita",
@@ -1538,7 +1541,9 @@ impl File {
                 target_os = "espidf",
                 target_os = "horizon",
                 target_os = "nuttx",
-                target_os = "l4re"
+                target_os = "l4re",
+                // IRIX cannot set a descriptor's times (no futimens, no futimes).
+                target_os = "irix"
             ) => {
                 // Redox doesn't appear to support `UTIME_OMIT`.
                 // ESP-IDF and HorizonOS do not support `futimens` at all and the behavior for those OS is therefore
@@ -2471,6 +2476,7 @@ mod remove_dir_impl {
         target_os = "haiku",
         target_os = "vxworks",
         target_os = "aix",
+        target_os = "irix",
     ))]
     fn is_dir(_ent: &DirEntry) -> Option<bool> {
         None
@@ -2482,6 +2488,7 @@ mod remove_dir_impl {
         target_os = "haiku",
         target_os = "vxworks",
         target_os = "aix",
+        target_os = "irix",
     )))]
     fn is_dir(ent: &DirEntry) -> Option<bool> {
         match ent.entry.d_type {

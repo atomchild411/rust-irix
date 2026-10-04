@@ -224,6 +224,11 @@ unsafe extern "C" {}
 #[link(name = "unwind")]
 unsafe extern "C" {}
 
+// LLVM's libunwind, from the IRIX toolchain; static, so programs need no copy on the target.
+#[cfg(target_os = "irix")]
+#[link(name = "unwind", kind = "static", modifiers = "-bundle")]
+unsafe extern "C" {}
+
 #[cfg(any(target_os = "nto", target_os = "qnx"))]
 cfg_select! {
     target_env = "nto70" => {
