@@ -1,17 +1,21 @@
 #!/usr/bin/env python3
 """irix_only_deps.py CRATEDIR...: drop the [target.'cfg(...)'.*] tables of a crate's Cargo.toml
-whose cfg is false for mips64-sgi-irix. Cargo resolves every target's dependencies, so a crate
-patched in for IRIX builds would otherwise need, say, the Windows crates its version asks for,
-which a package's vendored crates (for an older version) do not have."""
+whose cfg is false both for mips64-sgi-irix and for the build host (x86_64-unknown-linux-gnu: build
+scripts and proc macros use the same patched crate there). Cargo resolves every target's
+dependencies, so a crate patched in for IRIX builds would otherwise need, say, the Windows crates
+its version asks for, which a package's vendored crates (for an older version) do not have."""
 import re, sys
 
 IRIX = {'target_os': 'irix', 'target_family': 'unix', 'target_arch': 'mips64', 'target_env': '',
         'target_vendor': 'sgi', 'target_pointer_width': '32', 'target_endian': 'big',
         'target_abi': 'abin32', 'target_has_atomic': None}
+HOST = {'target_os': 'linux', 'target_family': 'unix', 'target_arch': 'x86_64', 'target_env': 'gnu',
+        'target_vendor': 'unknown', 'target_pointer_width': '64', 'target_endian': 'little',
+        'target_abi': '', 'target_has_atomic': None}
 FLAGS = {'unix': True, 'windows': False}
 
 
-def parse(s):
+def parse(s, env):
     toks = re.findall(r'[A-Za-z_][A-Za-z0-9_]*|"[^"]*"|[(),=]', s)
     pos = [0]
 
@@ -41,9 +45,9 @@ def parse(s):
         if peek() == '=':
             take()
             val = take().strip('"')
-            if name not in IRIX:
+            if name not in env:
                 return False
-            return IRIX[name] is None or IRIX[name] == val
+            return env[name] is None or env[name] == val
         return FLAGS.get(name, False)
 
     return expr()
@@ -66,7 +70,7 @@ def strip(path):
     out, dropped, gone = [], [], set()
     for p in parts:
         m = re.match(r"""\[target\.(['"])cfg\((.*)\)\1\.""", p)
-        if m and not parse(m.group(2)):
+        if m and not (parse(m.group(2), IRIX) or parse(m.group(2), HOST)):
             dropped.append(m.group(2))
             gone |= dep_names(p)
             continue
