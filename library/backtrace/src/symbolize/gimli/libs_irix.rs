@@ -49,14 +49,12 @@ pub(super) fn native_libraries() -> Vec<Library> {
     };
     let mut segments = Vec::new();
     unsafe {
-        let ehdr = &raw const __ehdr_start;
-        if (*ehdr).e_ident[..4] != *b"\x7fELF"
-            || usize::from((*ehdr).e_phentsize) != size_of::<Elf32Phdr>()
-        {
+        let ehdr: &Elf32Ehdr = &__ehdr_start;
+        if ehdr.e_ident[..4] != *b"\x7fELF" || usize::from(ehdr.e_phentsize) != size_of::<Elf32Phdr>() {
             return Vec::new();
         }
-        let phdrs = ehdr.cast::<u8>().add((*ehdr).e_phoff as usize).cast::<Elf32Phdr>();
-        for i in 0..usize::from((*ehdr).e_phnum) {
+        let phdrs = (ehdr as *const Elf32Ehdr).cast::<u8>().add(ehdr.e_phoff as usize).cast::<Elf32Phdr>();
+        for i in 0..usize::from(ehdr.e_phnum) {
             let ph = &*phdrs.add(i);
             if ph.p_type == PT_LOAD {
                 segments.push(LibrarySegment {

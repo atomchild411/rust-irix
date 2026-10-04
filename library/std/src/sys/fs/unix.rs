@@ -74,6 +74,8 @@ use crate::sys::weak::syscall;
 #[cfg(target_os = "android")]
 use crate::sys::weak::weak;
 use crate::sys::{AsInner, AsInnerMut, FromInner, IntoInner, cvt, cvt_r};
+// IRIX's canonicalize needs no null pointer.
+#[cfg_attr(target_os = "irix", allow(unused_imports))]
 use crate::{mem, ptr};
 
 // Used by rustc for checking the definitions of other function with the same symbol names
