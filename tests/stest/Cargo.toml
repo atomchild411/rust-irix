@@ -1,0 +1,13 @@
+[package]
+name = "stest"
+version = "0.1.0"
+edition = "2021"
+[dependencies]
+s04 = { package = "socket2", version = "0.4", features = ["all"] }
+s05 = { package = "socket2", version = "0.5", features = ["all"] }
+s06 = { package = "socket2", version = "0.6", features = ["all"] }
+[patch.crates-io]
+libc = { path = "../libc-0.2.189" }
+s04p = { package = "socket2", path = "../socket2-0.4.10" }
+s05p = { package = "socket2", path = "../socket2-0.5.10" }
+s06p = { package = "socket2", path = "../socket2-0.6.5" }

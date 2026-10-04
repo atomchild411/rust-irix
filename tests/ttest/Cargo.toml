@@ -1,0 +1,13 @@
+[package]
+name = "ttest"
+version = "0.1.0"
+edition = "2021"
+[dependencies]
+tokio = { version = "1", features = ["full"] }
+[patch.crates-io]
+libc = { path = "../libc-0.2.189" }
+tokio = { path = "../tokio-1.53.1" }
+mio = { path = "../mio-1.2.3" }
+socket2 = { path = "../socket2-0.6.5" }
+errno = { path = "../errno-0.3.14" }
+parking_lot_core = { path = "../parking_lot_core-0.9.12" }

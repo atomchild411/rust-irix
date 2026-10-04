@@ -1,0 +1,12 @@
+[package]
+name = "rtest"
+version = "0.1.0"
+edition = "2021"
+[dependencies]
+r1 = { package = "rustix", version = "1", features = ["all-apis"] }
+r038 = { package = "rustix", version = "0.38", features = ["all-apis"] }
+[patch.crates-io]
+libc = { path = "../libc-0.2.189" }
+r1p = { package = "rustix", path = "../rustix-1.1.5" }
+r038p = { package = "rustix", path = "../rustix-0.38.44" }
+errno = { path = "../errno-0.3.14" }

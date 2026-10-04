@@ -1,0 +1,35 @@
+{
+  "arch": "mips64",
+  "abi": "abin32",
+  "cpu": "mips4",
+  "features": "+mips4",
+  "data-layout": "E-m:e-p:32:32-i8:8:32-i16:16:32-i64:64-i128:128-n32:64-S128",
+  "llvm-target": "mips64-unknown-linux-gnuabin32",
+  "llvm-abiname": "n32",
+  "llvm-args": [
+    "-mno-check-zero-division"
+  ],
+  "target-endian": "big",
+  "target-pointer-width": 32,
+  "target-c-int-width": 32,
+  "max-atomic-width": 64,
+  "os": "irix",
+  "vendor": "sgi",
+  "target-family": [
+    "unix"
+  ],
+  "executables": true,
+  "dynamic-linking": true,
+  "has-rpath": true,
+  "linker": "/build/pkgbuild/pkgsrc-irix/tools/bin/mipseb-sgi-irix6.5-clang",
+  "linker-flavor": "gnu-cc",
+  "position-independent-executables": false,
+  "panic-strategy": "unwind",
+  "metadata": {
+    "description": "IRIX 6.5, MIPS IV, N32 ABI",
+    "std": true,
+    "tier": 3
+  },
+  "no-default-libraries": false,
+  "default-uwtable": true
+}

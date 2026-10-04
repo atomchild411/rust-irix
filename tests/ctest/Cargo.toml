@@ -1,0 +1,17 @@
+[package]
+name = "ctest"
+version = "0.1.0"
+edition = "2021"
+[dependencies]
+gr02 = { package = "getrandom", version = "0.2" }
+gr03 = { package = "getrandom", version = "0.3" }
+gr04 = { package = "getrandom", version = "0.4" }
+mio08 = { package = "mio", version = "0.8", features = ["os-poll", "net"] }
+mio1 = { package = "mio", version = "1", features = ["os-poll", "net"] }
+[patch.crates-io]
+libc = { path = "../libc-0.2.189" }
+gr02p = { package = "getrandom", path = "../getrandom-0.2.17" }
+gr03p = { package = "getrandom", path = "../getrandom-0.3.4" }
+gr04p = { package = "getrandom", path = "../getrandom-0.4.3" }
+mio08p = { package = "mio", path = "../mio-0.8.11" }
+mio1p = { package = "mio", path = "../mio-1.2.3" }

@@ -1,0 +1,11 @@
+[package]
+name = "ltest"
+version = "0.1.0"
+edition = "2021"
+[dependencies]
+l07 = { package = "libloading", version = "0.7" }
+l08 = { package = "libloading", version = "0.8" }
+[patch.crates-io]
+libc = { path = "../libc-0.2.189" }
+l07p = { package = "libloading", path = "../libloading-0.7.4" }
+l08p = { package = "libloading", path = "../libloading-0.8.9" }
