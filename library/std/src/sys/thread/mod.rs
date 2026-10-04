@@ -58,6 +58,7 @@ cfg_select! {
             target_os = "redox",
             target_os = "hurd",
             target_os = "aix",
+            target_os = "irix",
             target_os = "wasi",
         )))]
         pub use unix::set_name;
@@ -84,6 +85,7 @@ cfg_select! {
             target_os = "redox",
             target_os = "hurd",
             target_os = "aix",
+            target_os = "irix",
             target_os = "wasi",
         ))]
         pub use unsupported::set_name;

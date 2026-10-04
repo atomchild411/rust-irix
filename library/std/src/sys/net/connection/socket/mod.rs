@@ -47,6 +47,7 @@ cfg_select! {
         target_os = "l4re",
         target_os = "nto",
         target_os = "nuttx",
+        target_os = "irix",
         target_vendor = "apple",
     ) => {
         use c::IPV6_JOIN_GROUP as IPV6_ADD_MEMBERSHIP;

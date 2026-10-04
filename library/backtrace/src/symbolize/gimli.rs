@@ -43,6 +43,7 @@ cfg_if::cfg_if! {
         target_os = "solaris",
         target_os = "illumos",
         target_os = "aix",
+        target_os = "irix",
         target_os = "cygwin",
     ))] {
         #[path = "gimli/mmap_unix.rs"]
@@ -247,6 +248,9 @@ cfg_if::cfg_if! {
     } else if #[cfg(target_os = "aix")] {
         mod libs_aix;
         use libs_aix::native_libraries;
+    } else if #[cfg(target_os = "irix")] {
+        mod libs_irix;
+        use libs_irix::native_libraries;
     } else {
         // Everything else should doesn't know how to load native libraries.
         fn native_libraries() -> Vec<Library> {

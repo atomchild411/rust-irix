@@ -63,6 +63,8 @@ mod platform {
     pub use crate::os::hurd::*;
     #[cfg(target_os = "illumos")]
     pub use crate::os::illumos::*;
+    #[cfg(target_os = "irix")]
+    pub use crate::os::irix::*;
     #[cfg(target_os = "l4re")]
     pub use crate::os::l4re::*;
     #[cfg(target_os = "linux")]

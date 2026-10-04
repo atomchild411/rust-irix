@@ -562,6 +562,7 @@ impl FileDesc {
         target_os = "vxworks",
         target_os = "nto",
         target_os = "wasi",
+        target_os = "irix",
     )))]
     pub fn set_cloexec(&self) -> io::Result<()> {
         unsafe {
@@ -586,6 +587,7 @@ impl FileDesc {
         target_os = "vxworks",
         target_os = "nto",
         target_os = "wasi",
+        target_os = "irix",
     ))]
     pub fn set_cloexec(&self) -> io::Result<()> {
         unsafe {
